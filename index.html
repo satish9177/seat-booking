@@ -189,6 +189,7 @@ const moviesList = [
     { movieName: "Spiderman", price: 5 },
     { movieName: "Batman", price: 4 },
   ];
+  let bookingmovie=[];
   // const booked=new Set();
   const movielist=document.querySelector('#selectMovie');
   moviesList.forEach((movie)=>{
@@ -214,23 +215,26 @@ const moviesList = [
     const seat=seatCont[i];
     
        seat.addEventListener('click', ()=>{
-        if(!seat.classList.contains('occupied')) {
-      console.log(seat)
-      // console.log(booked,seat.classList.contains('occupied'))
+        if(!seat.classList.contains('occupied')) { 
       if(!seat.classList.contains('selected'))
         {seat.classList.add('selected');
         totalseatscount++;
+        bookingmovie.push(i); 
+        updatebooking();
         totalmovieprice+=Number(movielist.value.split(' ')[2]);
         }
       else
       { totalseatscount--;
         totalmovieprice-=Number(movielist.value.split(' ')[2]);
-        seat.classList.remove('selected');}
-     const pp=`<div style="display:flex; width:3.2rem; background-color: rgb(168, 245, 168); padding:1rem; align-item:center; ">${i+1}</div>`;
-     selectedSeatsHolder.innerHTML+=pp;
-      // selectedSeatsHolder.removeChild(span);
-     console.log(selectedSeatsHolder.innerHTML);
-      // selectedSeatsHolder.innerHTML.push(`<div style="background-color: rgb(168, 245, 168); padding:1.5rem auto; align-item:center; border:1px solid; background-color: rgb(168, 245, 168);" >${i+1}</div>`)
+        seat.classList.remove('selected');
+      bookingmovie= bookingmovie.filter((b)=>{ 
+          if(b==i) return false;
+          return true;
+         });
+        updatebooking();
+      }
+        
+     
       numberOfSeat.innerHTML=totalseatscount;
       totalPrice.innerHTML=`$ ${totalmovieprice}`;}
     })
@@ -258,8 +262,21 @@ const moviesList = [
       alert('yay no seat is selected')
     }
     })
+    // update
+function updatebooking(){
+  // console.log(bookingmovie);
+    selectedSeatsHolder.innerHTML='';
+    bookingmovie.forEach((st)=>{
+        const pp=document.createElement('div');
+            pp.classList.add('selectedSeat');
+     selectedSeatsHolder.append(pp);
+            pp.innerHTML=st;
+    })
+     
+}
   //  cancel
   cancelBtn.addEventListener('click',()=>{
+    bookingmovie=[];
     for(let i=0;i<seatCont.length;i++){
       const seat=seatCont[i];
     if(seat.classList.contains('selected')) {
@@ -271,11 +288,7 @@ const moviesList = [
       selectedSeatsHolder.innerHTML='<span class="noSelected">No Seat Selected</span>'
     }
     }
-  })
-// Use moviesList array for displaing the Name in the dropdown menu
-//Add eventLister to each unoccupied seat
-//Add eventLsiter to continue Button
-//Add eventListerner to Cancel Button
+  }) 
   </script>
 </body>
 </html>
